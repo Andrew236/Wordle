@@ -1,18 +1,19 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
-  </div>
+  <AppTitle />
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
-
+import AppTitle from "../components/AppTitle";
+import EntityService from "@/services/EntityService";
 export default {
   name: "HomeView",
+
   components: {
-    HelloWorld,
+    AppTitle,
+  },
+  async beforeMount() {
+    const words = await EntityService.getWords();
+    console.log("words", words);
   },
 };
 </script>
