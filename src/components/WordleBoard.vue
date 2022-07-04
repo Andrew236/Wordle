@@ -1,9 +1,8 @@
 <template>
   <div>
     <div v-for="guess in guesses" :key="guess" class="guess-container mt-2">
-      {{ wordToGuess }}
       <input
-        class="test-styles"
+        class="input-styles"
         v-for="(word, index) in wordToGuess"
         :key="index"
         ref="input-handlers"
@@ -29,13 +28,15 @@ export default {
   props: {
     guesses: Number,
     wordToGuess: String,
+    indexArray: Array,
+    currentGuess: Array,
   },
   data() {
     return {
       isButtonDisabled: true,
       guessedLetters: [],
-      currentGuess: [[]],
       guessUserIsOn: 0,
+      currentGuessTwoDArray: this.currentGuess,
     };
   },
 
@@ -46,34 +47,41 @@ export default {
         return e.preventDefault(); // Don't do anything to the input value
       } else {
         if (index === this.wordToGuess.length - 1) {
-          this.guessedLetters.push(e.key);
+          this.currentGuessTwoDArray[this.guessUserIsOn].push(e.key);
           this.isButtonDisabled = false;
           return;
         }
         this.$refs["input-handlers"][index + 1].focus();
-        this.guessedLetters.push(e.key);
+
+        this.currentGuessTwoDArray[this.guessUserIsOn];
+        this.currentGuessTwoDArray[this.guessUserIsOn].push(e.key);
       }
     },
     letterDeleted(index) {
-      console.log("aaa", this.$refs["input-handlers"]);
       if (index === 0) {
         this.$refs["input-handlers"][index].value = "";
-        this.guessedLetters.pop();
+        this.currentGuessTwoDArray[this.guessUserIsOn].pop();
         return;
       } else {
         this.$refs["input-handlers"][index].value = "";
         this.$refs["input-handlers"][index - 1].focus();
-        this.guessedLetters.pop();
+        this.currentGuessTwoDArray[this.guessUserIsOn].pop();
       }
     },
     submitGuess() {
-      this.guessedLetters.forEach((letter, index) => {
-        this.checkLetterCorrectness(letter, index);
-      });
+      this.currentGuessTwoDArray[this.guessUserIsOn].forEach(
+        (letter, index) => {
+          this.checkLetterCorrectness(letter, index);
+        }
+      );
       if (this.checkIfWon()) {
         alert("congrats you won the game");
+      } else {
+        this.guessUserIsOn += 1;
+
+        this.$refs["input-handlers"].splice(0, 5);
+        this.$refs["input-handlers"][0].focus();
       }
-      this.guessedLetters.splice(0, this.guessedLetters.length);
     },
     checkLetterCorrectness(letter, index) {
       if (this.wordToGuess.charAt(index) === letter) {
@@ -89,8 +97,15 @@ export default {
       }
     },
     checkIfWon() {
-      for (let index = 0; index < this.guessedLetters.length; index++) {
-        if (this.guessedLetters[index] !== this.wordToGuess[index])
+      for (
+        let index = 0;
+        index < this.currentGuessTwoDArray[this.guessUserIsOn].length;
+        index++
+      ) {
+        if (
+          this.currentGuessTwoDArray[this.guessUserIsOn][index] !==
+          this.wordToGuess[index]
+        )
           return false;
       }
       return true;
@@ -108,7 +123,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.test-styles {
+.input-styles {
   text-align: center;
   border: 2px solid lightgray;
   width: 62px;
