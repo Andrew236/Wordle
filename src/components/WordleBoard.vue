@@ -34,6 +34,7 @@ export default {
     return {
       isButtonDisabled: true,
       guessedLetters: [],
+      currentGuess: [[]],
       guessUserIsOn: 0,
     };
   },
@@ -69,22 +70,30 @@ export default {
       this.guessedLetters.forEach((letter, index) => {
         this.checkLetterCorrectness(letter, index);
       });
+      if (this.checkIfWon()) {
+        alert("congrats you won the game");
+      }
       this.guessedLetters.splice(0, this.guessedLetters.length);
-
-      // console.log("this.giuesses", this.guessedLetters);
     },
     checkLetterCorrectness(letter, index) {
-      if (this.wordToGuess.charAt(index).toLowerCase() === letter) {
+      if (this.wordToGuess.charAt(index) === letter) {
         this.$refs["input-handlers"][index].classList.add(
           "correct-letter-and-position"
         );
-      } else if (this.wordToGuess.toLowerCase().includes(letter)) {
+      } else if (this.wordToGuess.includes(letter)) {
         this.$refs["input-handlers"][index].classList.add(
           "correct-letter-wrong-position"
         );
       } else {
         this.$refs["input-handlers"][index].classList.add("wrong-letter");
       }
+    },
+    checkIfWon() {
+      for (let index = 0; index < this.guessedLetters.length; index++) {
+        if (this.guessedLetters[index] !== this.wordToGuess[index])
+          return false;
+      }
+      return true;
     },
   },
   computed: {
@@ -124,7 +133,7 @@ export default {
   align-items: center;
 }
 .correct-letter-and-position {
-  background-color: green;
+  background-color: #00e600;
 }
 
 .correct-letter-wrong-position {

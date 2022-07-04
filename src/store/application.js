@@ -14,7 +14,7 @@ export const actions = {
 
 export const mutations = {
   SET_WORD_TO_GUESS(state, words) {
-    state.word = words[Math.floor(Math.random() * words.length)];
+    state.word = words[Math.floor(Math.random() * words.length)].toLowerCase();
     state.lengthOfWord = state.word.length;
     state.guesses = state.lengthOfWord + 1;
   },
