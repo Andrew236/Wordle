@@ -37,6 +37,7 @@ export default {
       guessedLetters: [],
       guessUserIsOn: 0,
       currentGuessTwoDArray: this.currentGuess,
+      userGuesses: null,
     };
   },
 
@@ -69,6 +70,7 @@ export default {
       }
     },
     submitGuess() {
+      this.userGuesses -= 1;
       this.currentGuessTwoDArray[this.guessUserIsOn].forEach(
         (letter, index) => {
           this.checkLetterCorrectness(letter, index);
@@ -76,6 +78,8 @@ export default {
       );
       if (this.checkIfWon()) {
         alert("congrats you won the game");
+      } else if (this.checkIfLost()) {
+        alert("Sorry you lost :(");
       } else {
         this.guessUserIsOn += 1;
 
@@ -110,6 +114,9 @@ export default {
       }
       return true;
     },
+    checkIfLost() {
+      return this.userGuesses === 0 ? true : false;
+    },
   },
   computed: {
     focusInput() {
@@ -118,6 +125,7 @@ export default {
   },
   updated() {
     this.focusInput;
+    this.userGuesses = this.guesses;
   },
 };
 </script>
